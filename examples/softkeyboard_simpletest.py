@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2023 DJDevon3
 # SPDX-License-Identifier: MIT
-# ESP32-S3 Feather Weather MQTT Touchscreen
+# Started as ESP32-S3 Feather Weather MQTT Touchscreen
 # Coded for Circuit Python 8.2.x
 # Modified for SoftKeyboard by Tim C
 
@@ -76,7 +76,9 @@ TEXT_YELLOW = 0xFFFF00
 
 forkawesome_font = bitmap_font.load_font("/fonts/forkawesome-12.pcf")
 
-input_lbl = label.Label(terminalio.FONT, scale=2, text="", color=0xffffff, background_color=0x00000)
+input_lbl = label.Label(
+    terminalio.FONT, scale=2, text="", color=0xFFFFFF, background_color=0x00000
+)
 input_lbl.x = 10
 input_lbl.y = 10
 
@@ -88,7 +90,9 @@ main_group = displayio.Group()
 main_group.append(input_lbl)
 board.DISPLAY.root_group = main_group
 
-soft_kbd = SoftKeyboard(2, 100, DISPLAY_WIDTH - 2, DISPLAY_HEIGHT - 100, terminalio.FONT, forkawesome_font)
+soft_kbd = SoftKeyboard(
+    2, 100, DISPLAY_WIDTH - 2, DISPLAY_HEIGHT - 100, terminalio.FONT, forkawesome_font
+)
 
 main_group.append(soft_kbd)
 
@@ -104,4 +108,3 @@ while True:
         input_lbl.text += key_value
     elif key_value == 42:  # 0x2a backspace key
         input_lbl.text = input_lbl.text[:-1]
-

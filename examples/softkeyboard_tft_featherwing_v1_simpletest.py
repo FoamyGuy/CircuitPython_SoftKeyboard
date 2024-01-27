@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2023 DJDevon3
+# SPDX-License-Identifier: MIT
 import board
 import displayio
 import digitalio
@@ -35,7 +37,9 @@ touchscreen = adafruit_stmpe610.Adafruit_STMPE610_SPI(
 
 forkawesome_font = bitmap_font.load_font("/fonts/forkawesome-12.pcf")
 
-input_lbl = label.Label(terminalio.FONT, scale=2, text="", color=0xffffff, background_color=0x00000)
+input_lbl = label.Label(
+    terminalio.FONT, scale=2, text="", color=0xFFFFFF, background_color=0x00000
+)
 input_lbl.x = 10
 input_lbl.y = 10
 
@@ -44,7 +48,15 @@ main_group = displayio.Group()
 main_group.append(input_lbl)
 
 display.root_group = main_group
-soft_kbd = SoftKeyboard(2, 100, DISPLAY_WIDTH-2, DISPLAY_HEIGHT-100, terminalio.FONT, forkawesome_font, layout_config="mobile_layout.json")
+soft_kbd = SoftKeyboard(
+    2,
+    100,
+    DISPLAY_WIDTH - 2,
+    DISPLAY_HEIGHT - 100,
+    terminalio.FONT,
+    forkawesome_font,
+    layout_config="mobile_layout.json",
+)
 
 main_group.append(soft_kbd)
 
