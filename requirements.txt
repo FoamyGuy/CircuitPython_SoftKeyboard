@@ -1,0 +1,9 @@
+# SPDX-FileCopyrightText: 2017 Scott Shawcroft, written for Adafruit Industries
+# SPDX-FileCopyrightText: Copyright (c) 2024 Tim Cocks, DJDevon3
+#
+# SPDX-License-Identifier: MIT
+
+Adafruit-Blinka
+adafruit-circuitpython-bitmap_font
+adafruit-circuitpython-display-text
+adafruit-circuitpython-displayio-layout
