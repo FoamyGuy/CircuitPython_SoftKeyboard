@@ -16,7 +16,7 @@ description = "CircuitPython software defined keyboard for touch displays using 
 version = "0.0.0+auto.0"
 readme = "README.rst"
 authors = [
-    {name = "Tim Cocks, DJDevon3", email = "foamyguy@gmail"}
+    {name = "Tim Cocks, DJDevon3", email = "foamyguy@gmail.com"}
 ]
 urls = {Homepage = "https://github.com/Foamyguy/CircuitPython_SoftKeyboard"}
 keywords = [
