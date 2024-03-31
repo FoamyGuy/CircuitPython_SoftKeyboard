@@ -259,7 +259,9 @@ class SoftKeyboard(Group):
 
                             print(touched_cell_view.key_config)
                             if "key_value" in touched_cell_view.key_config:
-                                pressed_value = touched_cell_view.key_config["key_value"]
+                                pressed_value = touched_cell_view.key_config[
+                                    "key_value"
+                                ]
 
                             print(f"key_text: {pressed_value}")
 
@@ -282,9 +284,9 @@ class SoftKeyboard(Group):
                                 )
 
                             return pressed_value
-                        # catches touches outside on the edge of outer grid
-                        except KeyError as e:
-                            pass
+                    # catches touches outside on the edge of outer grid
+                    except KeyError as e:
+                        pass
         # keypress is None
         else:
             self.keypress_debounced = True
