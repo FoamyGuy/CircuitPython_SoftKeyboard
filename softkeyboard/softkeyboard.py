@@ -246,41 +246,45 @@ class SoftKeyboard(Group):
             if self.allow_sticky_repeat or self.keypress_debounced:
                 touched_cell = self.layout.which_cell_contains(touch_point)
                 if touched_cell:
-                    if self.last_keypressed_time + self.keypress_cooldown < now:
-                        touched_cell_view = self.layout.get_cell(touched_cell)
+                    try:
+                        if self.last_keypressed_time + self.keypress_cooldown < now:
+                            touched_cell_view = self.layout.get_cell(touched_cell)
 
-                        if not self.shift_mode:
-                            pressed_value = touched_cell_view.text.lower()
-                        else:
-                            pressed_value = touched_cell_view.text
-                            self.shift_mode = False
-                            self.shift_key_view.background_color = 0x000000
-
-                        print(touched_cell_view.key_config)
-                        if "key_value" in touched_cell_view.key_config:
-                            pressed_value = touched_cell_view.key_config["key_value"]
-
-                        print(f"key_text: {pressed_value}")
-
-                        self.last_keypressed_time = now
-                        self.keypress_debounced = False
-
-                        if pressed_value == 225:  # 0xE1 shift key
-                            self.shift_mode = not self.shift_mode
-                            if self.shift_mode:
-                                touched_cell_view.background_color = 0x0000FF
-                                self.shift_key_view = touched_cell_view
+                            if not self.shift_mode:
+                                pressed_value = touched_cell_view.text.lower()
                             else:
-                                touched_cell_view.background_color = 0x000000
-                        else:
-                            # non-special highlighting
-                            touched_cell_view.background_color = 0x00FF00
-                            touched_cell_view.color = 0x000000
-                            self._highlighted_views.append(
-                                (touched_cell_view, now + self.keypress_cooldown)
-                            )
+                                pressed_value = touched_cell_view.text
+                                self.shift_mode = False
+                                self.shift_key_view.background_color = 0x000000
 
-                        return pressed_value
+                            print(touched_cell_view.key_config)
+                            if "key_value" in touched_cell_view.key_config:
+                                pressed_value = touched_cell_view.key_config["key_value"]
+
+                            print(f"key_text: {pressed_value}")
+
+                            self.last_keypressed_time = now
+                            self.keypress_debounced = False
+
+                            if pressed_value == 225:  # 0xE1 shift key
+                                self.shift_mode = not self.shift_mode
+                                if self.shift_mode:
+                                    touched_cell_view.background_color = 0x0000FF
+                                    self.shift_key_view = touched_cell_view
+                                else:
+                                    touched_cell_view.background_color = 0x000000
+                            else:
+                                # non-special highlighting
+                                touched_cell_view.background_color = 0x00FF00
+                                touched_cell_view.color = 0x000000
+                                self._highlighted_views.append(
+                                    (touched_cell_view, now + self.keypress_cooldown)
+                                )
+
+                            return pressed_value
+                        # catches touches outside on the edge of outer grid
+                        except KeyError as e:
+                            pass
         # keypress is None
         else:
             self.keypress_debounced = True
