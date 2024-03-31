@@ -285,7 +285,7 @@ class SoftKeyboard(Group):
 
                             return pressed_value
                     # catches touches outside on the edge of outer grid
-                    except KeyError as e:
+                    except KeyError:
                         pass
         # keypress is None
         else:
