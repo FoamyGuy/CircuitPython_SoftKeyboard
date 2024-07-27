@@ -188,8 +188,8 @@
       "name": "row4",
       "keys": [
         {
-          "label": "CTRL",
-          "key_value": 224,
+          "label": "MOBL",
+          "key_value": "layout:mobile_layout.json",
           "col_span": 2
         },
         {

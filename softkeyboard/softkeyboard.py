@@ -23,7 +23,7 @@ Implementation Notes
   https://circuitpython.org/downloads
 
 """
-
+import gc
 # imports
 import json
 import time
@@ -127,7 +127,7 @@ class SoftKeyboard(Group):
     :param float keypress_cooldown: Time in seconds for keypress debounce.
     :param float highlight_duration: Time in seconds for label highlight during touch
     :param bool allow_sticky_repeat: Assistive sticky keys capability boolean
-    :param str layout_config: Filename for JSON layout. None defaults to default_layout.json
+    :param str layout_file: Filename for JSON layout. None defaults to default_layout.json
 
     """
 
@@ -148,49 +148,76 @@ class SoftKeyboard(Group):
         keypress_cooldown=DEFAULT_KEYPRESS_COOLDOWN,
         highlight_duration=DEFAULT_HIGHLIGHT_TIME,
         allow_sticky_repeat=False,
-        layout_config=None,
+        layout_file=None,
     ):
         super().__init__()
         self.shift_mode = False
-        self.layout_config = layout_config
-        lib_path = __file__
-        lib_path = lib_path.split("/")[:-1]
-        if self.layout_config is None:
-            layout_config = "default_layout.json"
+        self._layout_file = layout_file
+
+        if self._layout_file is None:
+            self._layout_file = "default_layout.json"
             # layout_file = open(f"{'/'.join(lib_path)}/default_layout.json", "r")
         # else:
-        with open(f"{'/'.join(lib_path)}/{layout_config}", "r") as layout_file:
-            self.layout_config = json.loads(layout_file.read())
 
         # print(f"Layout Config: {layout_config}")
+        self.highlight_duration = highlight_duration
+        self.keypress_cooldown = keypress_cooldown
 
+        self.allow_sticky_repeat = allow_sticky_repeat
+
+        self._highlighted_views = []
+        self.last_keypressed_time = -1
+        self.keypress_debounced = None
+
+        self.shift_key_view = None
+        self.layout = None
+
+        self.character_font = character_font
+        self.symbol_font = symbol_font
+
+        self.layout_x = x
+        self.layout_y = y
+
+        self.layout_width = width
+        self.layout_height = height
+
+        self._first_time = True
+        self._init_layout()
+
+
+    def _init_layout(self):
+        lib_path = __file__
+        lib_path = lib_path.split("/")[:-1]
+        with open(f"{'/'.join(lib_path)}/{self._layout_file}", "r") as layout_file:
+            self._layout_config = json.loads(layout_file.read())
+
+        if self.layout is not None and self.layout in self:
+            print("removing old self.layout")
+            self.remove(self.layout)
+            self.layout = None
+            gc.collect()
+
+        self._first_time = False
         layout = GridLayout(
-            x=x,  # layout x
-            y=y,  # layout y
-            width=width,
-            height=height,
+            x=self.layout_x,  # layout x
+            y=self.layout_y,  # layout y
+            width=self.layout_width,
+            height=self.layout_height,
             grid_size=tuple(
-                self.layout_config["base_grid_size"]
+                self._layout_config["base_grid_size"]
             ),  # Grid Layout width,height
             cell_padding=2,
             divider_lines=True,  # divider lines around every cell
             cell_anchor_point=(0.5, 0.5),
         )
-        self.highlight_duration = highlight_duration
-        self.keypress_cooldown = keypress_cooldown
-        self._highlighted_views = []
-        self.last_keypressed_time = -1
-        self.keypress_debounced = None
-        self.allow_sticky_repeat = allow_sticky_repeat
-        self.shift_key_view = None
 
-        for row_idx, row in enumerate(self.layout_config["rows"]):
+        for row_idx, row in enumerate(self._layout_config["rows"]):
             cur_span_offset = 0
             for col_idx, key in enumerate(row["keys"]):
-                _font = character_font
+                _font = self.character_font
                 if "font" in key:
                     if key["font"] == "symbol_font":
-                        _font = symbol_font
+                        _font = self.symbol_font
                 _scale = 2
                 if "scale" in key:
                     _scale = key["scale"]
@@ -209,6 +236,17 @@ class SoftKeyboard(Group):
         layout.layout_cells()
         self.layout = layout
         self.append(layout)
+
+
+    @property
+    def layout_file(self):
+        return self._layout_file
+
+    @layout_file.setter
+    def layout_file(self, new_layout_file):
+        self._layout_file = new_layout_file
+        self._init_layout()
+
 
     @property
     def height(self):

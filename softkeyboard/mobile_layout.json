@@ -116,12 +116,12 @@
       "keys": [
         {
           "label": "123",
-          "key_value": 224,
+          "key_value": "layout:default_layout.json",
 		  "col_span": 2
         },
         {
           "label": ":)",
-          "key_value": 226
+          "key_value": ":)"
         },
         {
           "label": "space",
